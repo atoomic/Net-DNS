@@ -181,14 +181,14 @@ sub _read_config_file {			## read resolver config file
 	my $self = shift;
 	my $file = shift;
 
-	local *FILE;
-	open( FILE, $file ) or croak "$file: $!";
+	my $fh;
+	open( $fh, '<', $file ) or croak "$file: $!";
 
 	my @nameserver;
 	my @searchlist;
 
 	local $_;
-	while (<FILE>) {
+	while (<$fh>) {
 		s/[;#].*$//;					# strip comments
 
 		/^nameserver/ && do {
@@ -217,7 +217,7 @@ sub _read_config_file {			## read resolver config file
 		};
 	}
 
-	close(FILE);
+	close($fh);
 
 	$self->nameservers(@nameserver) if @nameserver;
 	$self->searchlist(@searchlist)	if @searchlist;
